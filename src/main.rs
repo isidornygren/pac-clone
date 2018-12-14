@@ -1,6 +1,7 @@
 extern crate ggez;
 use ggez::graphics::{DrawMode, Point2, Rect};
 use ggez::*;
+mod map;
 
 const TILE_WIDTH: f32 = 32.0;
 const TILE_HEIGHT: f32 = 32.0;
@@ -101,6 +102,11 @@ impl event::EventHandler for MainState {
 }
 
 pub fn main() {
+    let new_map = map::load::load_map("./map_example.map").expect("Could not open map");
+
+    let tile_at_res = new_map.tile_at(0,1).expect("Could not look at tile");
+    print!("Char at 0,1 = {}.", tile_at_res);
+
     let context_builder = ContextBuilder::new("pacman_clone", "ggez")
         .window_setup(conf::WindowSetup::default().title("Pacman Clone!"))
         .window_mode(conf::WindowMode::default().dimensions(224, 288));
