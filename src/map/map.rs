@@ -1,6 +1,17 @@
+use std::io;
+
 #[derive(Debug)]
-pub struct Map {
-    pub width: u8,
-    pub height: u8,
-    pub data: Vec<Vec<char>>,
+pub struct Map<T> {
+    pub width: usize,
+    pub height: usize,
+    pub data: Vec<Vec<T>>,
+}
+
+impl <T> Map<T> {
+    fn tile_at(&self, x: usize, y: usize) -> Result<&T, io::Error> {
+        if y >= self.height || x >= self.width {
+            panic!("Points must be within matrix limits");
+        }
+        Ok(&self.data[y][x])
+    }
 }
