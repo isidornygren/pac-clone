@@ -2,6 +2,8 @@ extern crate ggez;
 use ggez::graphics::{DrawMode, Point2};
 use ggez::*;
 
+mod map;
+
 struct MainState {
     pos_x: f32,
 }
@@ -31,6 +33,8 @@ impl event::EventHandler for MainState {
 }
 
 pub fn main() {
+    map::load::load_map("./map_example.map").expect("Could not open map");
+
     let context_builder = ContextBuilder::new("pacman_clone", "ggez")
         .window_setup(conf::WindowSetup::default().title("Pacman Clone!"))
         .window_mode(conf::WindowMode::default().dimensions(224, 288));
