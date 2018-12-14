@@ -33,7 +33,10 @@ impl event::EventHandler for MainState {
 }
 
 pub fn main() {
-    map::load::load_map("./map_example.map").expect("Could not open map");
+    let new_map = map::load::load_map("./map_example.map").expect("Could not open map");
+
+    let tile_at_res = new_map.tile_at(0,1).expect("Could not look at tile");
+    print!("Char at 0,1 = {}.", tile_at_res);
 
     let context_builder = ContextBuilder::new("pacman_clone", "ggez")
         .window_setup(conf::WindowSetup::default().title("Pacman Clone!"))

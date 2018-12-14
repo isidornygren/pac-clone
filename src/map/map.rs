@@ -8,7 +8,7 @@ pub struct Map<T> {
 }
 
 impl <T> Map<T> {
-    fn tile_at(&self, x: usize, y: usize) -> Result<&T, io::Error> {
+    pub fn tile_at(&self, x: usize, y: usize) -> Result<&T, io::Error> {
         if y >= self.height || x >= self.width {
             panic!("Points must be within matrix limits");
         }
