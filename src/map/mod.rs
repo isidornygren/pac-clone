@@ -1,2 +1,2 @@
 pub mod load;
-mod map;
+pub mod map;

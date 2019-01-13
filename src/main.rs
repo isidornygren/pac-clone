@@ -2,6 +2,7 @@ extern crate ggez;
 use ggez::graphics::{DrawMode, Point2, Rect};
 use ggez::*;
 mod map;
+use map::map::Map;
 
 const TILE_WIDTH: f32 = 32.0;
 const TILE_HEIGHT: f32 = 32.0;
@@ -52,7 +53,7 @@ impl Tile for Wall {
         );
         graphics::rectangle(
             _ctx,
-            DrawMode::Line(1.0),
+            DrawMode::Fill,
             Rect {
                 x,
                 y,
@@ -65,14 +66,15 @@ impl Tile for Wall {
 
 struct MainState {
     pos_x: f32,
-    // level: Vec<Box<dyn Tile>>,
+    level: Map<char>,
 }
 
-// const level = vec!
-
 impl MainState {
-    fn new(_ctx: &mut Context) -> GameResult<MainState> {
-        let state = MainState { pos_x: 0.0_f32 };
+    fn new(_ctx: &mut Context, level: map::map::Map<char>) -> GameResult<MainState> {
+        let state = MainState {
+            pos_x: 0.0_f32,
+            level: level,
+        };
         Ok(state)
     }
 }
@@ -84,17 +86,16 @@ impl event::EventHandler for MainState {
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
         graphics::clear(ctx);
-        graphics::circle(
-            ctx,
-            DrawMode::Fill,
-            Point2::new(self.pos_x, 380.0),
-            100.0,
-            2.0,
-        )?;
 
-        Wall::draw(ctx, (32.0, 32.0));
-        Wall::draw(ctx, (64.0, 64.0));
-        Wall::draw(ctx, (128.0, 128.0));
+        for y in 0..self.level.height {
+            for x in 0..self.level.width {
+                let tile = self.level.tile_at(x, y).expect("Looked outside level");
+
+                if *tile == '#' {
+                    Wall::draw(ctx, ((x as f32) * TILE_WIDTH, (y as f32) * TILE_HEIGHT));
+                }
+            }
+        }
 
         graphics::present(ctx);
         Ok(())
@@ -104,14 +105,14 @@ impl event::EventHandler for MainState {
 pub fn main() {
     let new_map = map::load::load_map("./map_example.map").expect("Could not open map");
 
-    let tile_at_res = new_map.tile_at(0,1).expect("Could not look at tile");
-    print!("Char at 0,1 = {}.", tile_at_res);
+    let width = (new_map.width as u32) * (TILE_WIDTH as u32);
+    let height = (new_map.height as u32) * (TILE_HEIGHT as u32);
 
     let context_builder = ContextBuilder::new("pacman_clone", "ggez")
         .window_setup(conf::WindowSetup::default().title("Pacman Clone!"))
-        .window_mode(conf::WindowMode::default().dimensions(224, 288));
+        .window_mode(conf::WindowMode::default().dimensions(width, height));
 
     let ctx = &mut context_builder.build().unwrap();
-    let state = &mut MainState::new(ctx).unwrap();
+    let state = &mut MainState::new(ctx, new_map).unwrap();
     event::run(ctx, state).unwrap();
 }

@@ -7,7 +7,7 @@ pub struct Map<T> {
     pub data: Vec<Vec<T>>,
 }
 
-impl <T> Map<T> {
+impl<T> Map<T> {
     pub fn tile_at(&self, x: usize, y: usize) -> Result<&T, io::Error> {
         if y >= self.height || x >= self.width {
             panic!("Points must be within matrix limits");
