@@ -73,7 +73,7 @@ struct MainState {
 }
 
 impl MainState {
-    fn new(ctx: &mut Context, level: map::map::Map<char>) -> GameResult<MainState> {
+    fn new(ctx: &mut Context, level: Map<char>) -> GameResult<MainState> {
         let state = MainState {
             pos_x: 0.0_f32,
             level: level,
@@ -94,8 +94,9 @@ impl event::EventHandler for MainState {
 
         for y in 0..self.level.height {
             for x in 0..self.level.width {
-                let tile = self.level.tile_at(x, y).expect("Looked outside level");
-
+                let tile = self.level.tile_at(x, y);
+                let marching_value = self.level.marching_square_at(x, y, '#');
+                println!("marching value: {}", marching_value);
                 if *tile == '#' {
                     let dst = Point2::new((x as f32) * TILE_WIDTH, (y as f32) * TILE_HEIGHT);
                     graphics::draw(ctx, &self.wall_sprite, dst, 0.0)?;

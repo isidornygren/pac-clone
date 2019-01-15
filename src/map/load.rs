@@ -20,5 +20,6 @@ pub fn load_map(file_path: &str) -> Result<Map<char>, io::Error> {
         width: width,
         height: height,
         data: matrix,
+        default: ' ',
     })
 }
