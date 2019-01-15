@@ -1,6 +1,7 @@
 extern crate ggez;
 use ggez::graphics::{DrawMode, Point2, Rect};
 use ggez::*;
+
 mod map;
 use map::map::Map;
 
@@ -67,13 +68,17 @@ impl Tile for Wall {
 struct MainState {
     pos_x: f32,
     level: Map<char>,
+    wall_sprite: graphics::Image,
+    floor_sprite: graphics::Image,
 }
 
 impl MainState {
-    fn new(_ctx: &mut Context, level: map::map::Map<char>) -> GameResult<MainState> {
+    fn new(ctx: &mut Context, level: map::map::Map<char>) -> GameResult<MainState> {
         let state = MainState {
             pos_x: 0.0_f32,
             level: level,
+            wall_sprite: graphics::Image::new(ctx, "/wall_sprite.png")?,
+            floor_sprite: graphics::Image::new(ctx, "/wall_sprite.png")?,
         };
         Ok(state)
     }
@@ -92,7 +97,8 @@ impl event::EventHandler for MainState {
                 let tile = self.level.tile_at(x, y).expect("Looked outside level");
 
                 if *tile == '#' {
-                    Wall::draw(ctx, ((x as f32) * TILE_WIDTH, (y as f32) * TILE_HEIGHT));
+                    let dst = Point2::new((x as f32) * TILE_WIDTH, (y as f32) * TILE_HEIGHT);
+                    graphics::draw(ctx, &self.wall_sprite, dst, 0.0)?;
                 }
             }
         }
